@@ -19,8 +19,10 @@ Patch0:        glee-5.4.0-Makefile_in.patch
 BuildRequires: pkgconfig(gl)
 
 %description
-GLee (GL Easy Extension library) is a free cross-platform extension loading library for OpenGL. It
-provides seamless support for OpenGL functions up to version 3.0 and 398 extensions.
+GLee (GL Easy Extension library) is a free 
+cross-platform extension loading library for OpenGL. It
+provides seamless support for OpenGL 
+functions up to version 3.0 and 398 extensions.
 
 Features:
 
