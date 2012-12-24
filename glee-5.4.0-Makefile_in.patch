@@ -1,0 +1,119 @@
+--- Makefile.in	2009-02-07 21:45:53.000000000 +0100
++++ Makefile.in-gil	2012-01-05 07:13:55.715112045 +0100
+@@ -1,4 +1,6 @@
+ #Common programs
++DESTDIR=
++CC=@CC@
+ CXX=@CXX@
+ CPPFLAGS=@CPPFLAGS@
+ CXXFLAGS=@CXXFLAGS@ -Wall
+@@ -18,11 +20,14 @@
+ DATADIR=@datadir@
+ MKDIR=@MKDIR@
+ 
++MAJOR=0d1
++MINOR=0
++
+ #Package files
+ PACKAGE=@PACKAGE_NAME@-@PACKAGE_VERSION@
+ SOURCE=GLee.c
+ HEADER=GLee.h
+-LIBNAME=libGLee.so
++LIBNAME=libglee.so.$(MAJOR).$(MINOR)
+ README=readme.txt
+ BINSTALL=inst
+ DISTDIR=dists
+@@ -35,25 +40,77 @@
+ BINDISTFILES=glee/${LIBNAME} glee/${README} glee/${HEADER} glee/${BINSTALL} glee/extensionList.txt
+ 
+ 
++all: libglee.a libglee.so
++
++SOURCES = $(shell find . -name "*.c")
++
++SHARED_OBJS = $(SOURCES:.c=.shared.o)
++STATIC_OBJS = $(SOURCES:.c=.static.o)
++
++EXTRA_CFLAGS=-I.
++STATIC_CFLAGS= -O2 -g -Wall $(EXTRA_CFLAGS)
++SHARED_CFLAGS= $(STATIC_CFLAGS) -fPIC
++
++EXTRA_LDFLAGS=
++EXTRA_LIBS=
++
++libglee.so.$(MAJOR).$(MINOR): $(SHARED_OBJS)
++	${CXX} $(LDFLAGS) $(EXTRA_LDFLAGS) -shared \
++		-Wl,-soname,libglee.so.$(MAJOR) \
++		-o libglee.so.$(MAJOR).$(MINOR) \
++		$+ -o $@ $(EXTRA_LIBS) $(LIBS)
++
++libglee.so: libglee.so.$(MAJOR).$(MINOR)
++	rm -f $@.$(MAJOR)
++	ln -s $@.$(MAJOR).$(MINOR) $@.$(MAJOR)
++	rm -f $@
++	ln -s $@.$(MAJOR) $@
++
++libglee.a: $(STATIC_OBJS)
++	ar cru $@ $+
++
++##	${CXX} ${SRCDIR}/${SOURCE} -shared -I${SRCDIR} -I${INCLUDEDIR} ${LIBS} \
++##		${CXXFLAGS} ${DEFS} -o ${SRCDIR}/${LIBNAME}
++
++%.shared.o: %.cpp
++	${CXX} -o $@ -c $+ $(SHARED_CFLAGS)
++
++%.shared.o: %.c
++	${CXX} -o $@ -c $+ $(SHARED_CFLAGS)
++
++%.so : %.o
++	${CXX} $(LDFLAGS) $(EXTRA_LDFLAGS) -shared $^ -o $@
++
++%.static.o: %.cpp
++	${CXX} -o $@ -c $+ $(STATIC_CFLAGS)
++
++%.static.o: %.c
++	${CC} -o $@ -c $+ $(STATIC_CFLAGS)
+ 
+-all:
+-	${CXX} ${SRCDIR}/${SOURCE} -shared -I${SRCDIR} -I${INCLUDEDIR} ${LIBS} \
+-		${CXXFLAGS} ${DEFS} -o ${SRCDIR}/${LIBNAME}
++clean:
++	rm -f $(SHARED_OBJS)
++	rm -f $(STATIC_OBJS)
++	rm -f $(FIXED_OBJS)
++	rm -f $(STATIC_FIXED_OBJS)
++	rm -f *.so *.so* *.a *~
+ 
+ install:
+-	${INSTALLD} ${HEADER} ${INCLUDEDIR}/GL
+-	${INSTALLP} ${LIBNAME} ${LIBDIR}
+-	${MKDIR} -p ${DATADIR}/doc/GLee
+-	${INSTALLD} ${README} ${DATADIR}/doc/GLee
+-	${LDCONFIG}
+-
+-dists: dist bindist redist
++	mkdir -p $(DESTDIR)${INCLUDEDIR}
++	${INSTALLD} ${HEADER} $(DESTDIR)${INCLUDEDIR}/
++	mkdir -p $(DESTDIR)${LIBDIR}
++	cp -a *.a $(DESTDIR)${LIBDIR}
++	cp -a *.so* $(DESTDIR)${LIBDIR}
++##	${MKDIR} -p ${DATADIR}/doc/GLee
++##	${INSTALLD} ${README} ${DATADIR}/doc/GLee
++##	${LDCONFIG}
++
++##dists: dist bindist redist
+ 
+-dist:
+-	${TAR} -C ../ -czf ${DISTDIR}/${PACKAGE}-src.tar.gz ${DISTFILES}
++##dist:
++##	${TAR} -C ../ -czf ${DISTDIR}/${PACKAGE}-src.tar.gz ${DISTFILES}
+ 
+-redist:
+-	${TAR} -C ../ -czf ${DISTDIR}/${PACKAGE}-redist.tar.gz ${REDISTFILES}
++##redist:
++##	${TAR} -C ../ -czf ${DISTDIR}/${PACKAGE}-redist.tar.gz ${REDISTFILES}
+ 
+-bindist:
+-	${TAR} -C ../ -czf ${DISTDIR}/${PACKAGE}-bin.tar.gz ${BINDISTFILES}
++##bindist:
++##	${TAR} -C ../ -czf ${DISTDIR}/${PACKAGE}-bin.tar.gz ${BINDISTFILES}
