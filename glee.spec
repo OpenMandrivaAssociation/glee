@@ -1,6 +1,7 @@
 %define major 0d1
 %define libname %mklibname glee %major
 %define libname_devel %mklibname -d glee
+%define debug_package	%{nil}
 
 Name:          glee
 Version:       5.4.0
@@ -40,23 +41,30 @@ Group:            System/X11
 Provides:         %{name} = %{version}
 
 %description -n %libname
-GLee (GL Easy Extension library) is a free cross-platform extension loading library for OpenGL.
+GLee (GL Easy Extension library) is a free 
+cross-platform extension loading library for OpenGL.
+#--------------------------------------
 
 %package -n %libname_devel
 Group:         Development/C++
 Summary:       Devel package for %{name}
-Requires:      %libname = %{version}-%{release}
+Requires:      %libname = %{EVRD}
 Provides:      %{name}-devel = %{version}
 
 %description -n %libname_devel
-GLee (GL Easy Extension library) is a free cross-platform extension loading library for OpenGL.
+GLee (GL Easy Extension library) is a free 
+cross-platform extension loading library for OpenGL.
 
-This package contains static libraries and header files need for development.
+This package contains static libraries 
+and header files need for development.
+#--------------------------------------------
 
 %prep
 %setup -q -c
 %patch0 -p0
 %patch1 -p1
+
+chmod -x readme.txt extensionList.txt
 
 %build
 %configure2_5x
