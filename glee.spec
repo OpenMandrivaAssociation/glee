@@ -5,7 +5,7 @@
 
 Name:          glee
 Version:       5.4.0
-Release:       1
+Release:       2
 Summary:       GL Easy Extension library
 Group:         System/X11
 License:       BSD
