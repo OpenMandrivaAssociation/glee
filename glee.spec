@@ -5,7 +5,7 @@
 
 Name:          glee
 Version:       5.4.0
-Release:       2
+Release:       3
 Summary:       GL Easy Extension library
 Group:         System/X11
 License:       BSD
@@ -67,11 +67,11 @@ and header files need for development.
 chmod -x readme.txt extensionList.txt
 
 %build
-%configure2_5x
-%make
+%configure
+%make_build
 
 %install
-%makeinstall_std
+%make_install
 
 chmod 755 %{buildroot}%{_libdir}/*.so*
 
