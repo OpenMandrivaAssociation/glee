@@ -9,7 +9,7 @@ Release:       3
 Summary:       GL Easy Extension library
 Group:         System/X11
 License:       BSD
-Url:           http://elf-stone.com/glee.php
+Url:           https://elf-stone.com/glee.php
 Source0:       http://elf-stone.com/downloads/GLee/GLee-%{version}-src.tar.gz
 # includedir point to /usr/include instead of /usr/include/GL (default location)
 # from Debian
