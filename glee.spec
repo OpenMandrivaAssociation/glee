@@ -16,6 +16,11 @@ Source0:       http://elf-stone.com/downloads/GLee/GLee-%{version}-src.tar.gz
 Source1:       glee-%{version}.pc
 Patch0:        glee-5.4.0-Makefile_in.patch
 Patch1:        glee-5.4.0-GLXContextID.patch
+BuildRequires:	autoconf
+BuildRequires:	automake
+BuildRequires:	libtool-base
+BuildRequires:	slibtool
+BuildRequires:	make
 BuildRequires: pkgconfig(gl)
 
 %description
